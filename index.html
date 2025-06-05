@@ -8,27 +8,25 @@
   <p id="status">Checking your connection to local Wi-Fi...</p>
 
   <script>
-    const localUrl = "http://tv.clinics.local/topic_selector";
+    const faviconUrl = "http://tv.clinics.local/favicon.ico";
 
-    // Use a small resource (like a favicon or a 1x1 pixel image on your local server)
-    // You can also try any endpoint that returns a small image or even a blank response with correct headers.
     const img = new Image();
 
     img.onload = function() {
-      // Local resource loaded — safe to redirect
-      window.location.href = localUrl;
+      // Local resource loaded — redirect now
+      window.location.href = "http://tv.clinics.local/topic_selector";
     };
 
     img.onerror = function() {
-      // Failed to load local resource — probably not connected to local Wi-Fi
+      // Failed to load local resource — show warning
       document.getElementById('status').innerHTML = `
         <strong>Oops!</strong> Please connect to the local Wi-Fi network to access the TV service.<br />
-        Then <a href="${localUrl}">click here to continue</a>.
+        Then <a href="http://tv.clinics.local/topic_selector">click here to continue</a>.
       `;
     };
 
-    // Add a timestamp to avoid cached results
-    img.src = localUrl + '/favicon.ico?' + new Date().getTime();
+    // Avoid caching by appending a timestamp
+    img.src = faviconUrl + '?' + new Date().getTime();
   </script>
 </body>
 </html>
