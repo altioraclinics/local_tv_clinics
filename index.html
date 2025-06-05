@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Check Local Network</title>
+</head>
+<body>
+  <p id="status">Checking your connection...</p>
+
+  <script>
+    const localUrl = "http://tv.clinics.local/topic_selector";
+
+    fetch(localUrl, { mode: 'no-cors' }) // no-cors because of cross-origin limits
+      .then(() => {
+        // Local URL responded (or at least no network error)
+        window.location.href = localUrl;
+      })
+      .catch(() => {
+        // Fetch failed — probably not connected to local wifi
+        document.getElementById('status').innerHTML = `
+          <strong>Oops!</strong> Please first connect to the local Wi-Fi network to access the TV service.<br />
+          Then <a href="${localUrl}">click here to continue</a>.
+        `;
+      });
+  </script>
+</body>
+</html>
