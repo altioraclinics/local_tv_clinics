@@ -5,28 +5,35 @@
   <title>Check Local Network</title>
 </head>
 <body>
-  <p id="status">Checking your connection to local Wi-Fi...</p>
+  <p id="status">Checking your connection...</p>
 
   <script>
-    const faviconUrl = "tv.clinics.local/favicon.ico";
+    const localFaviconUrl = "http://tv.clinics.local/favicon.ico";
+    const statusEl = document.getElementById('status');
 
-    const img = new Image();
+    function checkLocalServer() {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
 
-    img.onload = function() {
-      // Local resource loaded — redirect now
-      window.location.href = "http://tv.clinics.local/topic_selector";
-    };
+        img.onload = () => resolve(true);  // favicon loaded - local server reachable
+        img.onerror = () => reject(false); // failed to load - probably not connected
 
-    img.onerror = function() {
-      // Failed to load local resource — show warning
-      document.getElementById('status').innerHTML = `
-        <strong>Oops!</strong> Please connect to the local Wi-Fi network to access the TV service.<br />
-        Then <a href="http://tv.clinics.local/topic_selector">click here to continue</a>.
-      `;
-    };
+        img.src = localFaviconUrl + "?_=" + Date.now(); // cache buster
+      });
+    }
 
-    // Avoid caching by appending a timestamp
-    img.src = faviconUrl + '?' + new Date().getTime();
+    checkLocalServer()
+      .then(() => {
+        // Redirect immediately if favicon loads
+        window.location.href = "http://tv.clinics.local/topic_selector";
+      })
+      .catch(() => {
+        // Show message if failed
+        statusEl.innerHTML = `
+          <strong>Oops!</strong> Please connect to the local Wi-Fi network to access the TV service.<br />
+          Then <a href="http://tv.clinics.local/topic_selector">click here to continue</a>.
+        `;
+      });
   </script>
 </body>
 </html>
