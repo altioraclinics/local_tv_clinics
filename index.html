@@ -8,32 +8,42 @@
   <p id="status">Checking your connection...</p>
 
   <script>
-    const localFaviconUrl = "http://tv.clinics.local/favicon.ico";
-    const statusEl = document.getElementById('status');
+    window.onload = function() {
+      const localFaviconUrl = "http://tv.clinics.local/favicon.ico";
+      const redirectUrl = "http://tv.clinics.local/topic_selector";
+      const statusEl = document.getElementById('status');
 
-    function checkLocalServer() {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
+      function checkLocalServer() {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
 
-        img.onload = () => resolve(true);  // favicon loaded - local server reachable
-        img.onerror = () => reject(false); // failed to load - probably not connected
+          img.onload = () => {
+            console.log("Favicon loaded successfully.");
+            resolve(true);
+          };
+          img.onerror = () => {
+            console.log("Favicon failed to load.");
+            reject(false);
+          };
 
-        img.src = localFaviconUrl + "?_=" + Date.now(); // cache buster
-      });
-    }
+          // Append a timestamp to avoid caching
+          img.src = localFaviconUrl + "?_=" + Date.now();
+        });
+      }
 
-    checkLocalServer()
-      .then(() => {
-        // Redirect immediately if favicon loads
-        window.location.href = "http://tv.clinics.local/topic_selector";
-      })
-      .catch(() => {
-        // Show message if failed
-        statusEl.innerHTML = `
-          <strong>Oops!</strong> Please connect to the local Wi-Fi network to access the TV service.<br />
-          Then <a href="http://tv.clinics.local/topic_selector">click here to continue</a>.
-        `;
-      });
+      checkLocalServer()
+        .then(() => {
+          console.log("Redirecting to local site...");
+          window.location.href = redirectUrl;
+        })
+        .catch(() => {
+          console.log("Showing error message.");
+          statusEl.innerHTML = `
+            <strong>Oops!</strong> Please connect to the local Wi-Fi network to access the TV service.<br />
+            Then <a href="${redirectUrl}">click here to continue</a>.
+          `;
+        });
+    };
   </script>
 </body>
 </html>
