@@ -8,44 +8,25 @@
   <p id="status">Checking your connection...</p>
 
   <script>
-    window.onload = function() {
-      const localFaviconUrl = "http://tv.clinics.local/favicon.ico";
-      const redirectUrl = "http://tv.clinics.local/topic_selector";
-      const statusEl = document.getElementById('status');
+    const localUrl = "http://tv.clinics.local/favicon.ico";
+    const redirectUrl = "http://tv.clinics.local/topic_selector";
+    const statusEl = document.getElementById('status');
 
-      function checkLocalServer() {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-
-          img.onload = () => {
-            console.log("Favicon loaded successfully.");
-            resolve(true);
-          };
-          img.onerror = () => {
-            console.log("Favicon failed to load.");
-            reject(false);
-          };
-
-          img.src = localFaviconUrl + "?_=" + Date.now();
+    // Wait 3 seconds before checking to let DNS/network settle
+    setTimeout(() => {
+      fetch(localUrl, { mode: 'no-cors' })
+        .then(() => {
+          // If fetch succeeds (even no-cors), assume reachable and redirect
+          window.location.href = redirectUrl;
+        })
+        .catch(() => {
+          // Fetch failed, probably not connected to local wifi
+          statusEl.innerHTML = `
+            <strong>Oops!</strong> Please first connect to the local Wi-Fi network to access the TV service.<br />
+            Then <a href="${redirectUrl}">click here to continue</a>.
+          `;
         });
-      }
-
-      // Wait 5 seconds before checking
-      setTimeout(() => {
-        checkLocalServer()
-          .then(() => {
-            console.log("Redirecting to local site...");
-            window.location.href = redirectUrl;
-          })
-          .catch(() => {
-            console.log("Showing error message.");
-            statusEl.innerHTML = `
-              <strong>Oops!</strong> Please connect to the local Wi-Fi network to access the TV service.<br />
-              Then <a href="${redirectUrl}">click here to continue</a>.
-            `;
-          });
-      }, 5000); // 5000 ms = 5 seconds
-    };
+    }, 3000);
   </script>
 </body>
 </html>
