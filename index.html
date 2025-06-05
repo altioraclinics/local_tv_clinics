@@ -5,23 +5,30 @@
   <title>Check Local Network</title>
 </head>
 <body>
-  <p id="status">Checking your connection...</p>
+  <p id="status">Checking your connection to local Wi-Fi...</p>
 
   <script>
     const localUrl = "http://tv.clinics.local/topic_selector";
 
-    fetch(localUrl, { mode: 'no-cors' }) // no-cors because of cross-origin limits
-      .then(() => {
-        // Local URL responded (or at least no network error)
-        window.location.href = localUrl;
-      })
-      .catch(() => {
-        // Fetch failed — probably not connected to local wifi
-        document.getElementById('status').innerHTML = `
-          <strong>Oops!</strong> Please first connect to the local Wi-Fi network to access the TV service.<br />
-          Then <a href="${localUrl}">click here to continue</a>.
-        `;
-      });
+    // Use a small resource (like a favicon or a 1x1 pixel image on your local server)
+    // You can also try any endpoint that returns a small image or even a blank response with correct headers.
+    const img = new Image();
+
+    img.onload = function() {
+      // Local resource loaded — safe to redirect
+      window.location.href = localUrl;
+    };
+
+    img.onerror = function() {
+      // Failed to load local resource — probably not connected to local Wi-Fi
+      document.getElementById('status').innerHTML = `
+        <strong>Oops!</strong> Please connect to the local Wi-Fi network to access the TV service.<br />
+        Then <a href="${localUrl}">click here to continue</a>.
+      `;
+    };
+
+    // Add a timestamp to avoid cached results
+    img.src = localUrl + '/favicon.ico?' + new Date().getTime();
   </script>
 </body>
 </html>
