@@ -26,23 +26,25 @@
             reject(false);
           };
 
-          // Append a timestamp to avoid caching
           img.src = localFaviconUrl + "?_=" + Date.now();
         });
       }
 
-      checkLocalServer()
-        .then(() => {
-          console.log("Redirecting to local site...");
-          window.location.href = redirectUrl;
-        })
-        .catch(() => {
-          console.log("Showing error message.");
-          statusEl.innerHTML = `
-            <strong>Oops!</strong> Please connect to the local Wi-Fi network to access the TV service.<br />
-            Then <a href="${redirectUrl}">click here to continue</a>.
-          `;
-        });
+      // Wait 5 seconds before checking
+      setTimeout(() => {
+        checkLocalServer()
+          .then(() => {
+            console.log("Redirecting to local site...");
+            window.location.href = redirectUrl;
+          })
+          .catch(() => {
+            console.log("Showing error message.");
+            statusEl.innerHTML = `
+              <strong>Oops!</strong> Please connect to the local Wi-Fi network to access the TV service.<br />
+              Then <a href="${redirectUrl}">click here to continue</a>.
+            `;
+          });
+      }, 5000); // 5000 ms = 5 seconds
     };
   </script>
 </body>
