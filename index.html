@@ -2,31 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Check Local Network</title>
+  <title>Redirecting...</title>
+  <meta http-equiv="refresh" content="0; URL='http://tv.clinics.local/topic_selector'" />
 </head>
 <body>
-  <p id="status">Checking your connection...</p>
-
-  <script>
-    const localUrl = "http://tv.clinics.local/favicon.ico";
-    const redirectUrl = "http://tv.clinics.local/topic_selector";
-    const statusEl = document.getElementById('status');
-
-    // Wait 3 seconds before checking to let DNS/network settle
-    setTimeout(() => {
-      fetch(localUrl, { mode: 'no-cors' })
-        .then(() => {
-          // If fetch succeeds (even no-cors), assume reachable and redirect
-          window.location.href = redirectUrl;
-        })
-        .catch(() => {
-          // Fetch failed, probably not connected to local wifi
-          statusEl.innerHTML = `
-            <strong>Oops!</strong> Please first connect to the local Wi-Fi network to access the TV service.<br />
-            Then <a href="${redirectUrl}">click here to continue</a>.
-          `;
-        });
-    }, 3000);
-  </script>
+  <p>If you are not redirected automatically, <a href="http://tv.clinics.local/topic_selector">click here</a>.</p>
 </body>
 </html>
